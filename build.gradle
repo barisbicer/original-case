@@ -27,6 +27,7 @@ build {
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-web')
+    implementation ('com.konghq:unirest-java:3.11.09')
     compileOnly('org.projectlombok:lombok')
     annotationProcessor('org.projectlombok:lombok')
     testCompileOnly('org.projectlombok:lombok')

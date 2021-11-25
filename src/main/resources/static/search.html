@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>KLM Case X01</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            $("body").on("submit", function (e) {
+                $("#dealPanel").hide();
+                e.preventDefault();
+            });
+
+            $("#searchPanel").on("submit", ".airport-form", function (e) {
+                var $t = $(e.target);
+
+                $.ajax({
+                    url:"/travel/airports",
+                    data: {
+                        "term": $t.find(".airport-name").val()
+                    }
+                }).done(function(data){
+                    $list = $t.find(".suggestions");
+                    $list.empty();
+
+                    if (data._embedded) {
+                        $.each(data._embedded.locations, function (i, loc) {
+                            var $li = $("<li></li>");
+                            $li.text(loc.name + " (" + loc.code + ")");
+                            $li.addClass("list-group-item");
+                            $li.addClass("airport-item");
+                            $li.attr("data-code", loc.code);
+                            $list.append($li);
+                        });
+                    } else {
+                        var $li = $("<li></li>");
+                        $li.text("Nothing found");
+                        $li.addClass("list-group-item");
+                        $li.addClass("special-item");
+                        $list.append($li);
+                    }
+                })
+            }).on("click", ".airport-item", function (e) {
+                var $t = $(e.target);
+
+                var $input = $t.parents("form").find(".airport-name")
+                $input.data("code", $t.attr("data-code"));
+                $input.val($t.text());
+                $t.parent().empty();
+            });
+
+            $("#faresPanel").on("submit", function (e) {
+                 var origin = $("#originForm .airport-name").data("code");
+                 var destination = $("#destinationForm .airport-name").data("code");
+
+                 if (!origin) {
+                    alert("Choose origin first");
+                    return;
+                 }
+
+                 if (!destination) {
+                    alert("Choose destination first");
+                    return;
+                 }
+
+                 $("#searchPanel .suggestions").empty();
+
+                 $button = $("#faresPanel input[type='submit']");
+                 $button.prop("disabled", true);
+                 $button.data("caption", $button.val());
+                 $button.val("Please wait ...");
+
+                 $.ajax({
+                    url: "/travel/fares/" + origin + "/" + destination
+                 }).done(function (data) {
+                    var $p = $("#dealPanel");
+                    $p.find(".price").text(data.amount + " " + data.currency);
+                    $p.find(".origin-title").text(data.origin.name + " (" + data.origin.code + ")");
+                    $p.find(".origin-desc").text(data.origin.description);
+                    $p.find(".destination-title").text(data.destination.name + " (" + data.destination.code + ")");
+                    $p.find(".destination-desc").text(data.destination.description);
+                    $p.show();
+
+                    $button.prop("disabled", false);
+                    $button.val($button.data("caption"));
+                 });
+            });
+        });
+    </script>
+
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <style>
+        form {
+            float: left;
+            margin: 10px;
+        }
+
+        .airport-form {
+            width: 40%;
+        }
+
+        .form-inline .form-control.airport-name {
+            width: 75%;
+        }
+
+        .suggestions {
+            margin-top: 10px;
+        }
+
+        .special-item {
+            font-style: italic;
+        }
+
+        .airport-item {
+            cursor: pointer;
+        }
+
+        #dealPanel {
+            margin-top: 50px;
+            position: absolute;
+        }
+
+        #dealPanel > div {
+            margin: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="jumbotron">
+            <h1>KLM Case X01</h1>
+            <p>Find the details of the assignment below. Have fun!</p>
+        </div>
+    </div>
+    <div class="row">
+        <a class="btn btn-primary btn-lg" href="./index.html" role="button">Assignment</a>
+        <a class="btn btn-success btn-lg" href="./search.html" role="button">Search</a>
+        <a class="btn btn-warning btn-lg" href="./start.html" role="button">Statistics</a>
+    </div>
+    <div class="row">
+        <div id="searchPanel">
+            <form id="originForm" class="airport-form form-inline">
+                <div class="form-row">
+                    <div class="col">
+                        <input class="airport-name form-control" placeholder="Origin" value="" type="text"/>
+                        <input class="btn btn-primary" type="submit" value="Search"/>
+                    </div>
+                </div>
+
+                <ul class="suggestions list-group">
+
+                </ul>
+            </form>
+
+            <form id="destinationForm" class="airport-form form-inline">
+                <div class="form-row">
+                    <input class="airport-name form-control" placeholder="Destination" value="" type="text"/>
+                    <input class="btn btn-primary" type="submit" value="Search"/>
+                </div>
+
+                <ul class="suggestions list-group">
+
+                </ul>
+            </form>
+
+            <form id="faresPanel" class="fares-form">
+                <input type="submit" class="btn btn-danger" value="Find a deal"/>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div id="dealPanel" style="display:none;">
+            <div>
+                <div class="origin-title"></div>
+                <div class="origin-desc"></div>
+            </div>
+            <div>
+                <div class="destination-title"></div>
+                <div class="destination-desc"></div>
+            </div>
+            <div>
+                <span class="price"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

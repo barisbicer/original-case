@@ -12,6 +12,9 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/index.html").addResourceLocations("classpath:/static/index.html");
+        registry.addResourceHandler("/search.html").addResourceLocations("classpath:/static/search.html");
+        registry.addResourceHandler("/start.html").addResourceLocations("classpath:/static/start.html");
+  
     }
 
 }

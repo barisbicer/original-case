@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>KLM Case X01</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <style>
+        #stat {
+            margin-top: 10px;
+            font-size: 20px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+
+    window.addEventListener('DOMContentLoaded', function() {
+         $.ajax({
+            url: "./statistics"
+         }).done(function (data) {
+            $("#stat").text(JSON.stringify(data, null, "   "));
+         });
+    });
+
+</script>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="row">
+        <div class="jumbotron">
+            <h1>KLM Case X01</h1>
+            <p>Find the details of the assignment below. Have fun!</p>
+        </div>
+    </div>
+    <div class="row">
+        <a class="btn btn-primary btn-lg" href="./index.html" role="button">Assignment</a>
+        <a class="btn btn-success btn-lg" href="./search.html" role="button">Search</a>
+        <a class="btn btn-warning btn-lg" href="./start.html" role="button">Statistics</a>
+    </div>
+
+    <div class="row">
+        <pre id="stat">
+        </pre>
+    </div>
+
+</div>
+</body>
+</html>
