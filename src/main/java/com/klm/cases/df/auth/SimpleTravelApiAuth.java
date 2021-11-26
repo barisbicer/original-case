@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import kong.unirest.json.JSONObject;
@@ -45,18 +47,23 @@ public class SimpleTravelApiAuth implements ApiAuth {
     }
 
     private void obtainToken() throws UnirestException {
-    	JSONObject response = Unirest.post(simpleTravelApiUrl + "/oauth/token")
+    	
+    	
+    	
+         HttpResponse<JsonNode> response = Unirest.post(simpleTravelApiUrl + "/oauth/token")
                 .header("accept", "application/json")
                 .header("content-type", "application/x-www-form-urlencoded")
-                .basicAuth("travel-api-client", "psw")
                 .queryString("grant_type", "client_credentials")
                 .queryString("username", username)
-                .queryString("password", password).asJson().getBody().getObject();
+                .queryString("password", password).asJson();
      
+    	
+    	
     	System.out.print("response:"+response);
+    
     	
        
-        tokenExpiresAtMillis = System.currentTimeMillis() + response.getInt("expires_in") * 1000;
+       tokenExpiresAtMillis = System.currentTimeMillis() + response.getStatus() * 1000;
 
         
       
