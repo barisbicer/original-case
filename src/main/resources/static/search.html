@@ -15,7 +15,7 @@
                 var $t = $(e.target);
 
                 $.ajax({
-                    url:"/travel/airports",
+                    url:"./airports",
                     data: {
                         "term": $t.find(".airport-name").val()
                     }
@@ -71,7 +71,7 @@
                  $button.val("Please wait ...");
 
                  $.ajax({
-                    url: "/travel/fares/" + origin + "/" + destination
+                    url: "./fares/" + origin + "/" + destination
                  }).done(function (data) {
                     var $p = $("#dealPanel");
                     $p.find(".price").text(data.amount + " " + data.currency);

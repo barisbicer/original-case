@@ -40,15 +40,17 @@ public class SimpleTravelApiController {
 
     @SuppressWarnings("rawtypes")
 	private HttpRequest unirestGetWithToken(String url) throws UnirestException {
-        return Unirest.get(url).header("Authorization", "Bearer " + apiAuth.getToken());
+    	 return Unirest.get(url).header("Authorization", "Bearer " + apiAuth.getToken());
     }
 
 
     @RequestMapping(method = GET, value = "/airports", produces = "application/json; charset=UTF-8")
     public Callable<ResponseEntity<Object>> query(@RequestParam Map<String, Object> params) throws UnirestException {
         return () -> {
-            
-			HttpRequest getRequest = unirestGetWithToken(simpleTravelApiUrl + "/airports").queryString(params);
+                    
+             HttpRequest getRequest = unirestGetWithToken(simpleTravelApiUrl + "/airports").queryString(params);
+        	// HttpRequest getRequest = Unirest.get(simpleTravelApiUrl + "/airports").queryString(params);
+        	
             return new ResponseEntity<>(getRequest.asString().getBody(), HttpStatus.OK);
         };
     }

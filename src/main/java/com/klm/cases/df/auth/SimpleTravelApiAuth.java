@@ -34,6 +34,7 @@ public class SimpleTravelApiAuth implements ApiAuth {
     public String getToken() throws UnirestException {
         if (System.currentTimeMillis() > tokenExpiresAtMillis) {
             synchronized (this) {
+            	 
                 if (System.currentTimeMillis() > tokenExpiresAtMillis) {
                     obtainToken();
                 }
@@ -51,10 +52,14 @@ public class SimpleTravelApiAuth implements ApiAuth {
                 .queryString("grant_type", "client_credentials")
                 .queryString("username", username)
                 .queryString("password", password).asJson().getBody().getObject();
-
-        token = response.get("access_token").toString();
+     
+    	System.out.print("response:"+response);
+    	
+       
         tokenExpiresAtMillis = System.currentTimeMillis() + response.getInt("expires_in") * 1000;
 
+        
+      
     	
     	
         logger.debug("Auth token received " + token);
