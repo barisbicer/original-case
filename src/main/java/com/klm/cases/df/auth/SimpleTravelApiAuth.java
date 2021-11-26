@@ -59,9 +59,7 @@ public class SimpleTravelApiAuth implements ApiAuth {
      
     	
     	
-    	System.out.print("response:"+response);
-    
-    	
+    	 	
        
        tokenExpiresAtMillis = System.currentTimeMillis() + response.getStatus() * 1000;
 
